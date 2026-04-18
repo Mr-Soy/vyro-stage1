@@ -1,0 +1,39 @@
+# ============================================
+# Grabpic — Project Requirements
+# ============================================
+
+# ---- System Requirements ----
+# Node.js >= 18.0.0
+# npm >= 9.0.0
+
+# ---- Backend Dependencies ----
+express@^4.18.0
+cors@^2.8.5
+express-rate-limit@^7.1.0
+multer@^1.4.5-lts.1
+dotenv@^16.3.0
+uuid@^9.0.0
+@supabase/supabase-js@^2.39.0
+@tensorflow/tfjs@^4.17.0
+@tensorflow/tfjs-backend-wasm@^4.22.0
+@vladmandic/face-api@^1.7.14
+jimp@^0.22.12
+swagger-jsdoc@^6.2.8
+swagger-ui-express@^5.0.0
+
+# ---- Backend Dev Dependencies ----
+nodemon@^3.0.0
+
+# ---- Frontend Dependencies ----
+react@^18.2.0
+react-dom@^18.2.0
+
+# ---- Frontend Dev Dependencies ----
+vite@^5.0.0
+@vitejs/plugin-react@^4.2.0
+
+# ---- ML Models (downloaded via: npm run download-models) ----
+# SSD MobileNet v1          — Face detection
+# FaceLandmark68Net         — 68-point facial landmark detection
+# FaceRecognitionNet        — 128-dimensional face descriptor encoding
+# Source: https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model

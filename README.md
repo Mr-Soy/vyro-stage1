@@ -24,6 +24,16 @@ Imagine a marathon with 500 runners and 50,000 photos. Instead of scrolling thro
 
 **Key constraint:** 100% pure JavaScript — zero native C++ bindings. No `tfjs-node`, no `canvas`. Runs on any platform where Node.js runs.
 
+### ML Models
+
+| Model | Purpose | Architecture | Output |
+|-------|---------|-------------|--------|
+| **SSD MobileNet v1** | Face detection | Single Shot Multibox Detector on MobileNet v1 backbone | Bounding boxes + confidence scores |
+| **FaceLandmark68Net** | Facial landmark detection | 68-point face landmark predictor | 68 (x, y) landmark coordinates |
+| **FaceRecognitionNet** | Face encoding | ResNet-34-like architecture | 128-dimensional descriptor vector |
+
+All models are served via the `@vladmandic/face-api` library, running on the **TensorFlow.js WASM backend** (no GPU or native bindings required). Model weights are downloaded from the jsDelivr CDN via `npm run download-models`.
+
 ---
 
 ## Features
