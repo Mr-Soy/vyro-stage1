@@ -395,6 +395,32 @@ The user's `grab_id` is used to query the junction table and return all event ph
 | `cd client && npm install` | Install frontend dependencies |
 | `cd client && npm run dev` | Start Vite dev server (http://localhost:5173) |
 | `cd client && npm run build` | Build frontend for production (outputs to `client/dist/`) |
+| `npm test` | Run all unit tests (Jest) |
+| `npm run test:verbose` | Run tests with verbose per-test output |
+| `npm run test:coverage` | Run tests with code coverage report |
+
+---
+
+## Testing
+
+44 unit tests across 6 test suites covering core logic, services, routes, and middleware.
+
+```bash
+npm test
+```
+
+| Test Suite | File | Tests | Coverage |
+|------------|------|------:|----------|
+| Face Service | `tests/faceService.test.js` | 13 | `compareFaces()`, `findMatchingGrabId()` — Euclidean distance, threshold matching, edge cases |
+| Error Handler | `tests/errorHandler.test.js` | 7 | Status codes, error codes, stack trace visibility, response structure |
+| Image Service | `tests/imageService.test.js` | 6 | Public URL generation, pagination clamping, 404 handling |
+| Crawl Service | `tests/crawlService.test.js` | 8 | File filtering, download errors, face detection failure recovery, new/matched face counting |
+| Routes | `tests/routes.test.js` | 4 | Health check, UUID validation, stats response shape (via supertest) |
+| Upload Middleware | `tests/uploadMiddleware.test.js` | 7 | MIME whitelist, file size defaults |
+
+All external dependencies (Supabase, TensorFlow.js, face-api models) are mocked — tests run in ~2 seconds with zero network calls.
+
+Full test documentation: [`tests.txt`](tests.txt)
 
 ---
 
@@ -488,7 +514,6 @@ curl https://your-backend.up.railway.app/api/stats
 <img width="2558" height="1213" alt="image" src="https://github.com/user-attachments/assets/c49d803d-288b-4188-b665-eb22cc8ce21c" />
 <img width="2556" height="1167" alt="Screenshot 2026-04-18 115850" src="https://github.com/user-attachments/assets/2b23e4ef-c4c9-44b7-a7c4-0e79ed1908c4" />
 
-## License
 
 MIT
 

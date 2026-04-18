@@ -1,0 +1,168 @@
+================================================================================
+                    GRABPIC — UNIT TEST DOCUMENTATION
+================================================================================
+
+Test Framework:  Jest (v29)
+HTTP Testing:    Supertest (v6)
+Run Command:     npm test
+Location:        tests/
+
+================================================================================
+  TEST FILES OVERVIEW
+================================================================================
+
+1. tests/faceService.test.js        — Face comparison & identity matching logic
+2. tests/errorHandler.test.js       — Global error handler middleware
+3. tests/imageService.test.js       — Image retrieval service (Supabase mocked)
+4. tests/crawlService.test.js       — Crawl pipeline (Supabase + faceService mocked)
+5. tests/routes.test.js             — HTTP route handlers (supertest)
+6. tests/uploadMiddleware.test.js   — Upload middleware validation rules
+
+================================================================================
+  1. faceService.test.js  (13 tests)
+================================================================================
+
+Module under test: server/services/faceService.js
+Mocking required:  None — tests pure functions only
+
+compareFaces()
+  ✓ Returns 0 for identical descriptors
+  ✓ Returns positive distance for different descriptors
+  ✓ Computes correct Euclidean distance (verified against sqrt(128))
+  ✓ Is commutative — distance(a,b) === distance(b,a)
+  ✓ Works with Float32Array inputs (as returned by face-api)
+  ✓ Returns 0 for two zero vectors
+
+findMatchingGrabId()
+  ✓ Returns closest match when distance < threshold (0.6)
+  ✓ Returns null when no face is within threshold
+  ✓ Returns null for empty knownFaces array
+  ✓ Picks the closest match among multiple candidates
+  ✓ Handles string-encoded JSONB encodings from Supabase
+  ✓ Returns distance in the result object
+  ✓ Returns correct distance value for near-identical descriptors
+
+================================================================================
+  2. errorHandler.test.js  (7 tests)
+================================================================================
+
+Module under test: server/middleware/errorHandler.js
+Mocking required:  res object (status/json spies)
+
+  ✓ Returns 500 by default when no statusCode is set
+  ✓ Uses err.statusCode when provided (e.g., 404)
+  ✓ Uses err.status as fallback (e.g., 400)
+  ✓ Includes stack trace in development mode
+  ✓ Does NOT include stack trace in production mode
+  ✓ Defaults error code to "INTERNAL_ERROR"
+  ✓ Always sets success: false in response
+
+================================================================================
+  3. imageService.test.js  (6 tests)
+================================================================================
+
+Module under test: server/services/imageService.js
+Mocking required:  server/config/supabase (storage + DB)
+
+getImagePublicUrl()
+  ✓ Returns a valid public URL for a given storage path
+  ✓ Calls supabase.storage.from() with the correct bucket name
+
+getImagesByGrabId()
+  ✓ Throws 404 when grab_id does not exist in the database
+  ✓ Clamps limit to max 100 (input: 999 → result.limit ≤ 100)
+  ✓ Returns empty images array when no face_image_map entries exist
+  ✓ Enforces minimum page of 1 (input: -5 → result.page = 1)
+
+================================================================================
+  4. crawlService.test.js  (7 tests)
+================================================================================
+
+Module under test: server/services/crawlService.js
+Mocking required:  server/config/supabase, server/services/faceService
+
+listStorageFiles()
+  ✓ Filters to only image files (jpg, jpeg, png, webp)
+  ✓ Throws on Supabase storage errors
+  ✓ Returns empty array for empty buckets
+  ✓ Uses default bucket name "event-photos"
+
+processImage()
+  ✓ Throws when image download fails
+  ✓ Marks image as processed even when face detection fails
+  ✓ Correctly counts new faces and matched faces
+
+crawlBucket()
+  ✓ Skips already-processed images, processes only new ones
+
+================================================================================
+  5. routes.test.js  (4 tests)
+================================================================================
+
+Module under test: server/routes/*.js (images, stats) + health endpoint
+Mocking required:  server/utils/faceModels, server/config/supabase
+HTTP testing via:  supertest (no real server started)
+
+GET /api/health
+  ✓ Returns 200 with { success: true, message: "Grabpic API is running" }
+
+GET /api/images/:grab_id
+  ✓ Rejects invalid UUID format with 400 + INVALID_GRAB_ID error code
+  ✓ Accepts valid UUID format (passes validation layer)
+
+GET /api/stats
+  ✓ Returns 200 with correct response shape (all 4 stat fields present)
+
+================================================================================
+  6. uploadMiddleware.test.js  (7 tests)
+================================================================================
+
+Module under test: Upload middleware validation rules
+Mocking required:  None
+
+MIME type filtering
+  ✓ Accepts image/jpeg
+  ✓ Accepts image/png
+  ✓ Accepts image/webp
+  ✓ Rejects image/gif
+  ✓ Rejects application/pdf
+  ✓ Rejects text/plain
+
+File size limit
+  ✓ Defaults to 5MB (5,242,880 bytes)
+
+================================================================================
+  TOTAL: 44 unit tests across 6 test files
+================================================================================
+
+MOCKING STRATEGY
+----------------
+- Supabase client is mocked via jest.mock() to avoid real database calls.
+- faceService (detectFaces, findMatchingGrabId) is mocked in crawlService
+  tests to isolate the crawl pipeline from ML model loading.
+- faceModels (loadModels, tf, faceapi) is mocked in route tests to avoid
+  loading TensorFlow.js and 12MB of model weights during testing.
+- compareFaces() and findMatchingGrabId() are tested directly as pure
+  functions with no mocking needed.
+
+RUNNING TESTS
+-------------
+  npm test                  Run all tests once
+  npm run test:verbose      Run with verbose output (per-test results)
+  npm run test:coverage     Run with code coverage report
+
+COVERAGE AREAS
+--------------
+  ✓ Core face comparison algorithm (Euclidean distance)
+  ✓ Identity matching logic (threshold, closest match, edge cases)
+  ✓ Error handler HTTP status codes and response structure
+  ✓ Image URL generation from Supabase Storage
+  ✓ Pagination parameter clamping and validation
+  ✓ Storage file listing and extension filtering
+  ✓ Face detection failure recovery (graceful degradation)
+  ✓ Crawl pipeline (new vs matched faces, skip processed)
+  ✓ Route-level input validation (UUID format)
+  ✓ Health check endpoint
+  ✓ Stats endpoint response shape
+  ✓ Upload MIME type whitelist
+  ✓ File size limit default
