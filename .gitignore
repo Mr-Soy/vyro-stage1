@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# environment
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# build
+dist/
+
+# logs
+*.log
+npm-debug.log*
+
+# model weights (downloadable via scripts/download-models.js)
+models/*.bin
