@@ -482,6 +482,11 @@ curl https://your-backend.up.railway.app/api/stats
 | `@vitejs/plugin-react` | Vite React plugin (JSX, Fast Refresh) |
 
 ---
+<img width="2559" height="1189" alt="image" src="https://github.com/user-attachments/assets/ff93800c-05e8-4f14-9441-c950fd23d01f" />
+<img width="2559" height="1197" alt="image" src="https://github.com/user-attachments/assets/59bbb6dd-0c7e-46d5-b1a7-798f8dde47c9" />
+
+<img width="2558" height="1213" alt="image" src="https://github.com/user-attachments/assets/c49d803d-288b-4188-b665-eb22cc8ce21c" />
+<img width="2556" height="1167" alt="Screenshot 2026-04-18 115850" src="https://github.com/user-attachments/assets/2b23e4ef-c4c9-44b7-a7c4-0e79ed1908c4" />
 
 ## License
 
