@@ -19,5 +19,8 @@ dist/
 *.log
 npm-debug.log*
 
+# docs
+SRS.md
+
 # model weights (downloadable via scripts/download-models.js)
 models/*.bin

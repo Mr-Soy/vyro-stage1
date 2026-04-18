@@ -21,6 +21,14 @@ export default function App() {
         <span className="logo" onClick={() => navigate('home')}>
           Grabpic
         </span>
+        <a
+          className="header-link"
+          href={(import.meta.env.VITE_API_URL || 'http://localhost:3001') + '/api-docs'}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          API Docs
+        </a>
       </header>
 
       <main>
